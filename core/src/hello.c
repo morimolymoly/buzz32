@@ -2,5 +2,4 @@
 void main(void)
 {
     TikaTika();
-    while(1){}
 }

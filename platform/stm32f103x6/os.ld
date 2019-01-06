@@ -5,7 +5,7 @@ https://qiita.com/mitazet/items/83ddd6cdffc43dd42f21
  */
 MEMORY
 {
-	FLASH (rx) : ORIGIN = 0x00000000, LENGTH = 128K
+	FLASH (rx) : ORIGIN = 0x08000000, LENGTH = 128K
 }
 /*
 セクションの定義．

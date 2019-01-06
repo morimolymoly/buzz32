@@ -24,7 +24,7 @@ target_NOT_using_CMSIS_list :=
 include rules.mk
 
 #Create corresponding device variable
-$(eval $(call eval_all_variable,$(STM32F103_X6_DEVICE),$(STM32)))
+$(eval $(call eval_all_variable,$(STM32F103_X6_DEVICE)))
 
 
 define build_command
@@ -53,6 +53,13 @@ all:  $($(STM32F103_X6_DEVICE)_TARGET) $($(STM32F103_X6_DEVICE)_TARGET)
 
 target:
 	$(call build_command,$(PLAT))
+
+run:
+	@$(QEMU) -M ? | grep stm32-f103c8 >/dev/null || exit
+	@echo "Press Ctrl-A and then X to exit QEMU"
+	@echo
+	$(QEMU) -M stm32-f103c8 -nographic -kernel ./release/STM32F103x6/STM32F103x6.bin
+	rm -f DAC_OUT_PUT*.txt
 
 qemu: $($(STM32P103_DEVICE)_TARGET)
 	@$(QEMU) -M ? | grep stm32-f103c8 >/dev/null || exit

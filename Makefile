@@ -67,6 +67,9 @@ qemu: $($(STM32P103_DEVICE)_TARGET)
 	@echo
 	$(QEMU) -M stm32-f103c8 -nographic -kernel $($(STM32P103_DEVICE)_TARGET_bin)
 
+flash:
+	st-flash write release/STM32F103x6/STM32F103x6.bin 08000000
+
 clean:
 	rm -rf $(RELEASE_DIR)
 

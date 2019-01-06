@@ -6,12 +6,16 @@ CORTEX_M4 := -mcpu=cortex-m4
 CFLAGS = -fno-common -ffreestanding -O0 -std=gnu99 \
 	 	 -gdwarf-2 -g3 -Wall -Werror \
 	 	 -mthumb
+QEMU := /Users/mizuho/buzz/qbuild/arm-softmmu/qemu-system-arm
 
 #devices vendor
 STM32 := STM32
 
 #Naming your devices
-STM32F103X6_DEVICE := stm32f103x6
+STM32F103_X6_DEVICE := STM32F103x6
+
+#Device using Cortex-M4 CPU.Otherwise, treated as Cortex-M3(in uni_def)
+target_using_CM4_list :=
 
 #For those devices that does not need CMSIS
 target_NOT_using_CMSIS_list :=
@@ -20,7 +24,8 @@ target_NOT_using_CMSIS_list :=
 include rules.mk
 
 #Create corresponding device variable
-$(eval $(call eval_all_variable,$(STM32F103X6_DEVICE),$(STM32)))
+$(eval $(call eval_all_variable,$(STM32F103_X6_DEVICE),$(STM32)))
+
 
 define build_command
 	mkdir -p $($(1)_RELEASE_DIR)
@@ -37,17 +42,23 @@ $($(1)_TARGET):
 endef
 
 #Create corresponding build command to the device
-$(eval $(call eval_build_command,$(STM32F103X6_DEVICE)))
+$(eval $(call eval_build_command,$(STM32F103_X6_DEVICE)))
 
 #default target
-PLAT ?= $(STM32F103X6_DEVICE)
+PLAT ?= $(STM32F103_X6_DEVICE)
 
-.PHONY:all target clean cscope astyle st-flash st-erase
+.PHONY:all target clean
 
-all:  $($(STM32F103X6_DEVICE)_TARGET) $($(STM32F103X6_DEVICE)_TARGET)
+all:  $($(STM32F103_X6_DEVICE)_TARGET) $($(STM32F103_X6_DEVICE)_TARGET)
 
 target:
 	$(call build_command,$(PLAT))
+
+qemu: $($(STM32P103_DEVICE)_TARGET)
+	@$(QEMU) -M ? | grep stm32-f103c8 >/dev/null || exit
+	@echo "Press Ctrl-A and then X to exit QEMU"
+	@echo
+	$(QEMU) -M stm32-f103c8 -nographic -kernel $($(STM32P103_DEVICE)_TARGET_bin)
 
 clean:
 	rm -rf $(RELEASE_DIR)
